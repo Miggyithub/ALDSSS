@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Online Order Form</title>
+    <style>
+        body {
+            font-family: "Times New Roman", serif;
+            background-color: #f4ecd8;
+            color: #4b3621;
+            text-align: center;
+            padding: 50px;
+        }
+        .container {
+            background: #e8d8c0;
+            padding: 30px;
+            border: 2px solid #8b6f47;
+            border-radius: 5px;
+            width: 450px;
+            margin: auto;
+            box-shadow: 5px 5px 15px #a0896a;
+        }
+        input, select {
+            width: calc(100% - 100px);
+            padding: 10px;
+            margin: 12px 0;
+            border: 2px solid #8b6f47;
+            background: #f4e4c3;
+            color: #4b3621;
+            font-size: 18px;
+            border-radius: 4px;
+        }
+        .voice-btn {
+            width: 90px;
+            padding: 10px;
+            background: #8b6f47;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            margin-left: 8px;
+            border-radius: 4px;
+        }
+        button {
+            width: 100%;
+            padding: 12px;
+            background: #8b6f47;
+            border: none;
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+        button:hover {
+            background: #705738;
+        }
+        .input-group {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Online Order Form</h2>
+        <p>Order Number: <span id="orderNumber"></span></p>
+        <form id="orderForm">
+            <label for="name">Name:</label>
+            <div class="input-group">
+                <input type="text" id="name" placeholder="Enter your name" required>
+                <button type="button" class="voice-btn" onclick="startSpeechRecognition('name')">|Speak here</button>
+            </div>
+            <label for="email">Email:</label>
+            <input type="email" id="email" placeholder="Enter your email" required>
+            <label for="product">Product:</label>
+            <select id="product" required>
+                <option value="">Select Product</option>
+                <option value="Laptop">Laptop</option>
+                <option value="Phone">Phone</option>
+                <option value="Tablet">Tablet</option>
+            </select>
+            <label for="quantity">Quantity:</label>
+            <input type="number" id="quantity" min="1" max="10" placeholder="Enter quantity" required>
+            <button type="submit">Place Order</button>
+        </form>
+        <p id="message" style="display: none; color: #4b3621; font-weight: bold;"></p>
+    </div>
+    <script>
+        function getRandomOrderNumber() {
+            return Math.floor(Math.random() * 900000000) + 100000000;
+        }
+        
+        document.getElementById("orderNumber").textContent = getRandomOrderNumber();
+        
+        document.getElementById("orderForm").addEventListener("submit", function(event) {
+            event.preventDefault();
+            let name = document.getElementById("name").value;
+            let email = document.getElementById("email").value;
+            let product = document.getElementById("product").value;
+            let quantity = document.getElementById("quantity").value;
+            let message = document.getElementById("message");
+            
+            if (name && email && product && quantity) {
+                message.style.display = "block";
+                message.textContent = `Thank you, ${name}, for ordering ${quantity} ${product}(s)! Your order has been placed.`;
+                document.getElementById("orderNumber").textContent = getRandomOrderNumber();
+            }
+        });
+
+        function startSpeechRecognition(inputId) {
+            const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+            recognition.lang = "en-US";
+            recognition.start();
+            
+            recognition.onresult = function(event) {
+                document.getElementById(inputId).value = event.results[0][0].transcript;
+            };
+        }
+    </script>
+</body>
+</html>
